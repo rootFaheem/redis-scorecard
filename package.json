@@ -1,0 +1,17 @@
+{
+  "name": "redis-scorecard",
+  "version": "1.0.0",
+  "description": "A redis memory cahce to seve the many users",
+  "main": "server.js",
+  "repository": "https://github.com/rootFaheem/redis-scorecard.git",
+  "author": "rootFaheem",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^0.19.2",
+    "express": "^4.17.1",
+    "redis": "^3.0.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.2"
+  }
+}
