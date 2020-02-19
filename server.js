@@ -13,6 +13,24 @@ const client = redis.createClient(REDIS_PORT);
 
 app.get("/", (req, res, next) => res.send(200));
 
+const cachedScoreMiddleware = (_, res, next) => {
+  try {
+    client.get("score", (err, score) => {
+      if (score) {
+        return res.status(200).json({
+          success: true,
+          message: "Successful",
+          score
+        });
+      } else {
+        next();
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 app.get("/api/score", async (req, res, next) => {
   try {
     const {
@@ -32,7 +50,3 @@ app.get("/api/score", async (req, res, next) => {
 });
 
 app.listen(PORT, () => console.log(`catch server at: ${PORT}`));
-
-module.exports = {
-  client
-};
