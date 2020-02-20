@@ -15,12 +15,12 @@ app.get("/", (req, res, next) => res.send(200));
 
 const cachedScoreMiddleware = (_, res, next) => {
   try {
-    client.get("score", (err, score) => {
-      if (score) {
+    client.get("score", (err, data) => {
+      if (data) {
         return res.status(200).json({
           success: true,
           message: "Successful",
-          score
+          score: JSON.parse(data)
         });
       } else {
         next();
@@ -31,18 +31,22 @@ const cachedScoreMiddleware = (_, res, next) => {
   }
 };
 
-app.get("/api/score", async (req, res, next) => {
+app.get("/api/score", cachedScoreMiddleware, async (req, res, next) => {
   try {
+    console.log("fetching...");
+
     const {
       data: { data }
     } = await axios.get(
       `https://rest.cricketapi.com/rest/v2/match/${MATCH_KEY}/?access_token=${CRICKET_API_TOKEN}`
     );
 
+    client.setex("score", 10, JSON.stringify(data));
+
     return res.status(200).json({
       success: true,
       message: "successful",
-      data
+      score: data
     });
   } catch (error) {
     return error;
